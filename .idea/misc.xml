@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.19814814814814816" />
+        <entry key="../../.gradle/caches/transforms-3/2210dd89ebc417fa8d1f970f3f009eb9/transformed/jetified-play-services-base-17.1.0/res/drawable/common_google_signin_btn_icon_light_focused.xml" value="0.1465" />
+        <entry key="app/src/main/res/drawable/nopicture.xml" value="0.24351851851851852" />
+        <entry key="app/src/main/res/layout-w936dp/activity_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.18868668167679398" />
+        <entry key="app/src/main/res/layout/activity_register.xml" value="0.19454373518625895" />
+        <entry key="app/src/main/res/layout/fragment_recipe.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/ingredients_list_items.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/recipe_list_item.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/recipe_listi_tem.xml" value="0.5557698862054852" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
