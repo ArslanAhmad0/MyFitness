@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "929312443763",
+    "firebase_url": "https://helthfitness-61032.firebaseio.com",
+    "project_id": "helthfitness-61032",
+    "storage_bucket": "helthfitness-61032.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:929312443763:android:83b3317d76a1a9b35e4906",
+        "android_client_info": {
+          "package_name": "com.example.myfitness"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "929312443763-bh40jl4fo228pln5t3qsqka3d6afck54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnjKnP1iojPY8iwBA23WojoHmFWwWdyTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "929312443763-bh40jl4fo228pln5t3qsqka3d6afck54.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
