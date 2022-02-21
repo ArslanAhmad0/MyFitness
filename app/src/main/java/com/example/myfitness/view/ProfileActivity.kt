@@ -47,9 +47,20 @@ class ProfileActivity : AppCompatActivity() {
 
         })
         binding.LogoutBTN.setOnClickListener {
-            authentication.signOut()
-            startActivity(Intent(this,LoginActivity::class.java))
-            finish()
+            binding.MainContainView.visibility=View.GONE
+            binding.BackDialogue.visibility=View.VISIBLE
+            "Logout".also { binding.OkBTN.text = it }
+            binding.OkBTN.setOnClickListener {
+                authentication.signOut()
+                startActivity(Intent(this,LoginActivity::class.java))
+                finish()
+            }
+            binding.CancelBTN.setOnClickListener {
+                binding.MainContainView.visibility=View.VISIBLE
+                binding.BackDialogue.visibility=View.GONE
+            }
+
+
         }
     }
 
@@ -57,6 +68,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onBackPressed() {
         binding.MainContainView.visibility=View.GONE
         binding.BackDialogue.visibility=View.VISIBLE
+        "Exit".also { binding.OkBTN.text=it }
 
         binding.CancelBTN.setOnClickListener {
             binding.MainContainView.visibility=View.VISIBLE
@@ -65,7 +77,6 @@ class ProfileActivity : AppCompatActivity() {
         binding.OkBTN.setOnClickListener {
             super.onBackPressed()
         }
-
 
     }
 }
