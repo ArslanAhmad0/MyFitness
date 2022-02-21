@@ -40,6 +40,7 @@ class ProfileActivity : AppCompatActivity() {
                     "${snapshot.child("firstname").value} ${snapshot.child("lastname").value}"
                 binding.NameTV.text = name
                 binding.EmailTV.text = user.email
+                Toast.makeText(this@ProfileActivity, user.uid, Toast.LENGTH_SHORT).show()
             }
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@ProfileActivity, "Something Went wrong with data", Toast.LENGTH_SHORT).show()
