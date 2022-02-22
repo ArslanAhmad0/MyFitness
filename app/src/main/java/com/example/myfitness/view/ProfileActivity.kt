@@ -1,10 +1,15 @@
 package com.example.myfitness.view
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.myfitness.databinding.ActivityProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -15,6 +20,10 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var authentication: FirebaseAuth
     private var databaseReference: DatabaseReference?=null
     private var database: FirebaseDatabase?=null
+
+    // for notification
+    private val channelId="channel id"
+    private val notificationId=101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +36,8 @@ class ProfileActivity : AppCompatActivity() {
         databaseReference= database?.reference!!.child("profile")
 
         loadProfile()
+        createNotificationChannel()
+
 
     }
 
@@ -40,6 +51,7 @@ class ProfileActivity : AppCompatActivity() {
                     "${snapshot.child("firstname").value} ${snapshot.child("lastname").value}"
                 binding.NameTV.text = name
                 binding.EmailTV.text = user.email
+                sendNotification()
                 Toast.makeText(this@ProfileActivity, user.uid, Toast.LENGTH_SHORT).show()
             }
             override fun onCancelled(error: DatabaseError) {
@@ -79,5 +91,29 @@ class ProfileActivity : AppCompatActivity() {
             super.onBackPressed()
         }
 
+    }
+
+    private fun createNotificationChannel(){
+
+            val name = "notification title"
+            val descriptionText = "Notification description"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId,name,importance).apply {
+               description = descriptionText
+            }
+            val notificationManager:NotificationManager=getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+    }
+    private fun sendNotification(){
+        val builder=NotificationCompat.Builder(this,channelId)
+            .setSmallIcon(R.drawable.notification_icon_background)
+            .setContentTitle("Logout")
+            .setContentText("You are now logout from MyFitness")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        with(NotificationManagerCompat.from(this)){
+            notify(notificationId,builder.build())
+
+        }
     }
 }
