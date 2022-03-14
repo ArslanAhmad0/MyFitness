@@ -107,9 +107,9 @@ class ProfileActivity : AppCompatActivity() {
     }
     private fun sendNotification(){
         val builder=NotificationCompat.Builder(this,channelId)
-            .setSmallIcon(R.drawable.notification_icon_background)
-            .setContentTitle("Logout")
-            .setContentText("You are now logout from MyFitness")
+            .setSmallIcon(android.R.drawable.btn_star_big_on)
+            .setContentTitle("LogIn")
+            .setContentText("You are now login to MyFitness Successfully")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         with(NotificationManagerCompat.from(this)){
             notify(notificationId,builder.build())
