@@ -1,0 +1,82 @@
+fun onFilterButtonClicked(filter: EnrichedTransactionListSearchFilter) {
+    val updatedState = when (filter) {
+        is EnrichedTransactionListSearchFilter.Credit -> {
+            _filterUiState.value.copy(
+                isInFilterEnabled = !_filterUiState.value.isInFilterEnabled,
+                isOutFilterEnabled = if (_filterUiState.value.isInFilterEnabled) _filterUiState.value.isOutFilterEnabled else false
+            )
+        }
+        is EnrichedTransactionListSearchFilter.Debit -> {
+            _filterUiState.value.copy(
+                isOutFilterEnabled = !_filterUiState.value.isOutFilterEnabled,
+                isInFilterEnabled = if (_filterUiState.value.isOutFilterEnabled) _filterUiState.value.isInFilterEnabled else false
+            )
+        }
+        is EnrichedTransactionListSearchFilter.AmountRange -> {
+            handleAmountFilter(filter)
+        }
+        is EnrichedTransactionListSearchFilter.DateRange -> {
+            handleDateFilter(filter)
+        }
+    }
+
+    _filterUiState.value = updatedState
+    updateTransactionsFilters()
+}
+
+private fun handleAmountFilter(filter: EnrichedTransactionListSearchFilter.AmountRange): FilterUiState {
+    fromAmount = filter.from
+    toAmount = filter.to
+    val isEnabled = filter.from != null || filter.to != null
+
+    return _filterUiState.value.copy(
+        isAmountFilterEnabled = isEnabled,
+        appliedAmountFilterRange = if (isEnabled) updateAmountFilterName(filter.from, filter.to) else ""
+    )
+}
+
+private fun handleDateFilter(filter: EnrichedTransactionListSearchFilter.DateRange): FilterUiState {
+    val formatter = DateTimeFormatter.ofPattern(DATE_PATTERN)
+    fromDate = parseDate(filter.from, formatter)
+    toDate = parseDate(filter.to, formatter)
+    val isEnabled = fromDate != null || toDate != null
+
+    return _filterUiState.value.copy(
+        isDateFilterEnabled = isEnabled,
+        appliedDateFilterRange = if (isEnabled) updateDateFilterName(fromDate, toDate) else ""
+    )
+}
+
+private fun parseDate(dateString: String?, formatter: DateTimeFormatter): Date? {
+    return dateString?.takeIf { it.isNotBlank() }?.let {
+        Date.from(LocalDate.parse(it, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant())
+    }
+}
+
+private fun updateTransactionsFilters() {
+    val newFilters = createTransactionsFiltersFromState()
+    transactionsFilters = newFilters
+    updateFiltering(newFilters)
+}
+
+private fun createTransactionsFiltersFromState(): TransactionsFilters {
+    return TransactionsFilters(
+        type = determineTransactionType(),
+        fromAmount = fromAmount.takeIf { it.isNotNullOrZero() },
+        toAmount = toAmount.takeIf { it.isNotNullOrZero() },
+        fromDate = fromDate,
+        toDate = toDate
+    )
+}
+
+private fun determineTransactionType(): TransactionsFilterTransactionType {
+    return when {
+        _filterUiState.value.isInFilterEnabled && _filterUiState.value.isOutFilterEnabled ->
+            TransactionsFilterTransactionType.ALL
+        _filterUiState.value.isInFilterEnabled ->
+            TransactionsFilterTransactionType.CREDIT
+        _filterUiState.value.isOutFilterEnabled ->
+            TransactionsFilterTransactionType.DEBIT
+        else -> TransactionsFilterTransactionType.ALL
+    }
+}
