@@ -1,0 +1,48 @@
+fun highlightText(
+    fullText: String,
+    query: String
+): AnnotatedString {
+    if (query.isEmpty()) {
+        return AnnotatedString(fullText)
+    }
+
+    val builder = AnnotatedString.Builder()
+    var lastIndex = 0
+    val lowerCaseText = fullText.lowercase()
+    val lowerCaseQuery = query.lowercase()
+
+    var startIndex = lowerCaseText.indexOf(lowerCaseQuery)
+    while (startIndex != -1) {
+        // Append the text before the match
+        builder.append(fullText.substring(lastIndex, startIndex))
+
+        // Append the highlighted text with bold style
+        val endIndex = startIndex + query.length
+        builder.withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(fullText.substring(startIndex, endIndex))
+        }
+
+        lastIndex = endIndex
+        startIndex = lowerCaseText.indexOf(lowerCaseQuery, lastIndex)
+    }
+
+    // Append any remaining text
+    if (lastIndex < fullText.length) {
+        builder.append(fullText.substring(lastIndex))
+    }
+
+    return builder.toAnnotatedString()
+}
+
+
+
+
+
+val highlightedTitle = highlightText(item.title, searchQuery)
+
+Text(
+    text = highlightedTitle,
+    maxLines = 1,
+    overflow = TextOverflow.Ellipsis,
+    style = CouttsTheme.typography.body.semiBold02, // You can reuse your defined typography style
+)

@@ -1,0 +1,189 @@
+@Composable
+private fun EnrichedTransactionListItem(
+    item: TransactionListItemUiModel,
+    searchQuery: String = "", // Add search query parameter
+    onTransactionClick: (Transaction) -> Unit
+) {
+    // Highlight logic for title
+    val highlightedTitle = highlightText(
+        text = item.title,
+        query = searchQuery,
+        originalStyle = CouttsTheme.typography.text.body.regular02,
+        highlightStyle = CouttsTheme.typography.text.body.semiBold02
+    )
+
+    // Highlight logic for subtitle (if applicable)
+    val highlightedSubtitle = if (item.subtitle.isNotNullOrNotBlank()) {
+        highlightText(
+            text = item.subtitle,
+            query = searchQuery,
+            originalStyle = CouttsTheme.typography.text.body.regular03,
+            highlightStyle = CouttsTheme.typography.text.body.semiBold03
+        )
+    } else null
+
+    // Rest of your existing layout...
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        // ... existing merchant logo code
+
+        Column(modifier = Modifier.weight(1f)) {
+            // Use highlighted text instead of plain text
+            highlightedTitle?.let {
+                BasicText(
+                    text = it,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+
+            highlightedSubtitle?.let {
+                BasicText(
+                    modifier = Modifier.padding(top = 4.dp),
+                    text = it,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+
+        // ... rest of your amount/balance columns
+    }
+}
+
+
+
+
+
+
+
+
+@Composable
+fun highlightText(
+    text: String,
+    query: String,
+    originalStyle: TextStyle,
+    highlightStyle: TextStyle
+): AnnotatedString {
+    if (query.isEmpty()) {
+        return AnnotatedString(text, originalStyle.toSpanStyle())
+    }
+
+    return buildAnnotatedString {
+        val lowerCaseText = text.lowercase(Locale.getDefault())
+        val lowerCaseQuery = query.lowercase(Locale.getDefault())
+        var currentIndex = 0
+
+        while (currentIndex < lowerCaseText.length) {
+            val matchIndex = lowerCaseText.indexOf(lowerCaseQuery, currentIndex)
+
+            if (matchIndex == -1) {
+                // No more matches, append remaining text
+                append(text.substring(currentIndex))
+                break
+            }
+
+            // Append text before match
+            if (matchIndex > currentIndex) {
+                append(text.substring(currentIndex, matchIndex))
+            }
+
+            // Append matched text with highlight style
+            withStyle(highlightStyle.toSpanStyle()) {
+                append(text.substring(matchIndex, matchIndex + query.length))
+            }
+
+            currentIndex = matchIndex + query.length
+        }
+    }
+}
+
+
+
+
+@Composable
+internal fun TransactionsList(
+    collection: TransactionListItemCollection,
+    isLoadingMoreItems: Boolean,
+    searchQuery: String = "", // Add search query parameter
+    modifier: Modifier = Modifier,
+    onLoadMoreItems: () -> Unit = {},
+    onTransactionClick: (Transaction) -> Unit = {}
+) {
+    // ... existing list state logic
+
+    LazyColumn(
+        state = listState,
+        modifier = modifier.background(color = CouttsTheme.colors.surface.background.color),
+    ) {
+        // ... pending transactions section
+
+        if (completedTransactions.isNotEmpty()) {
+            completedTransactionItems(
+                completedTransactions = completedTransactions,
+                searchQuery = searchQuery, // Pass search query
+                onTransactionClicked = onTransactionClick,
+            )
+        }
+
+        // ... loading more items
+    }
+}
+
+
+
+
+
+
+
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.completedTransactionItems(
+    completedTransactions: Map<String, List<TransactionListItemUiModel>>,
+    searchQuery: String = "", // Add parameter
+    onTransactionClicked: (Transaction) -> Unit,
+) {
+    completedTransactions.forEach { (date, transactions) ->
+        stickyHeader {
+            StickyHeader(text = date)
+        }
+
+        itemsIndexed(
+            items = transactions,
+        ) { index, item ->
+            EnrichedTransactionListItem(
+                item = item,
+                searchQuery = searchQuery, // Pass to each item
+                onTransactionClick = onTransactionClicked,
+            )
+            if (index != transactions.size - 1) {
+                InLineListDivider()
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// In your search screen
+EnrichedTransactionList(
+    lazyPagingItems = lazyPagingItems,
+    transactionListItemsMapper = transactionListItemsMapper,
+    searchQuery = filterUiState.searchQueryInput, // Pass current search query
+    onTransactionClick = onTransactionClick,
+)
